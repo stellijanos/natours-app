@@ -53,6 +53,14 @@ exports.getAllTours = async (req, res) => {
             query.sort('-createdAt');
         }
 
+        // 3) Field limiting
+        if (req.query.fields) {
+            const fields = req.query.fields.splot(',').join(' ');
+            query = query.select('name duration price'); // projecting
+        } else {
+            query = query.select('-__v');
+        }
+
         // EXECUTE QUERY
         const tours = await query;
 
