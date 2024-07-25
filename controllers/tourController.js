@@ -1,5 +1,12 @@
 const Tour = require('../models/tourModel');
 
+exports.aliasTopTours = (req, res, next) => {
+    req.query.limit = 5;
+    req.query.sort = '-ratingsAverage,price';
+    req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
+    next();
+};
+
 exports.createTour = async (req, res) => {
     try {
         // const newTour = new Tour({});
@@ -55,7 +62,7 @@ exports.getAllTours = async (req, res) => {
 
         // 3) Field limiting
         if (req.query.fields) {
-            const fields = req.query.fields.splot(',').join(' ');
+            const fields = req.query.fields.split(',').join(' ');
             query = query.select('name duration price'); // projecting
         } else {
             query = query.select('-__v');
@@ -70,7 +77,7 @@ exports.getAllTours = async (req, res) => {
 
         if (req.query.page) {
             const numTours = await Tour.countDocuments();
-            if (skip >= numTours) throw new Error('This page does not exist');
+            // if (skip >= numTours) throw new Error('This page does not exist');
         }
 
         // EXECUTE QUERY
