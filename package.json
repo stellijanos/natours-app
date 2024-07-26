@@ -4,8 +4,8 @@
   "description": "Learning node, express and mongodb",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon server.js",
-    "start:prod": "cross-env NODE_ENV=production nodemon server.js"
+    "start": "supervisor server.js",
+    "start:prod": "cross-env NODE_ENV=production supervisor server.js"
   },
   "author": "Janos Stelli",
   "license": "ISC",
@@ -14,7 +14,8 @@
     "express": "^4.19.2",
     "mongodb": "^6.8.0",
     "mongoose": "^5.13.22",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "supervisor": "^0.12.0"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
