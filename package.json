@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "supervisor server.js",
-    "start:prod": "cross-env NODE_ENV=production supervisor server.js"
+    "start:prod": "cross-env NODE_ENV=production supervisor server.js",
+    "debug": "ndb server.js"
   },
   "author": "Janos Stelli",
   "license": "ISC",
