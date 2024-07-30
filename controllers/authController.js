@@ -125,7 +125,6 @@ exports.restrictTo =
                 ),
             );
         }
-
         next();
     };
 
