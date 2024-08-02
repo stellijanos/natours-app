@@ -22,11 +22,11 @@ exports.getTour = catchAsync(async (req, res) => {
     });
 
     // 2) buld template
-    console.log()
+    console.log();
 
     // 3) render template using data from 1)
     res.status(200).render('tour', {
-        title: 'The Forest Hiker Tour',
-        tour
+        title: `${tour.name} Tour`,
+        tour,
     });
 });
