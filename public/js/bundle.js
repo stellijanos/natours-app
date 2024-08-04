@@ -9929,7 +9929,8 @@ const showAlert = (type, message) => {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   login: () => (/* binding */ login)
+/* harmony export */   login: () => (/* binding */ login),
+/* harmony export */   logout: () => (/* binding */ logout)
 /* harmony export */ });
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
 /* harmony import */ var _alert__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./alert */ "./public/js/alert.js");
@@ -9956,6 +9957,20 @@ const login = async (email, password) => {
         (0,_alert__WEBPACK_IMPORTED_MODULE_0__.showAlert)('error', err.response.data.message);
     }
 };
+
+const logout = async () => {
+    try {
+        const res = await (0,axios__WEBPACK_IMPORTED_MODULE_1__["default"])({
+            method: 'GET',
+            url: 'http://127.0.0.1:8000/api/v1/users/logout',
+        });
+        if (res.data.status === 'success') location.reload(true);
+    } catch (err) {
+        console.log(err.response);
+        (0,_alert__WEBPACK_IMPORTED_MODULE_0__.showAlert)('error', 'Error logging out! Try again.');
+    }
+};
+
 // export const login = async (email, password) => {
 //     try {
 //         const res = await fetch('http://127.0.0.1:8000/api/v1/users/login', {
@@ -14843,9 +14858,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 // DOM ELEMENTS
 const mapBox = document.getElementById('map');
 const loginForm = document.querySelector('.form');
+const logoutBtn = document.querySelector('.nav__el--logout');
 
 // VALUES
 
@@ -14864,6 +14881,8 @@ if (loginForm && email && password) {
         (0,_login__WEBPACK_IMPORTED_MODULE_2__.login)(email, password);
     });
 }
+
+if (logoutBtn) logoutBtn.addEventListener('click', _login__WEBPACK_IMPORTED_MODULE_2__.logout);
 
 })();
 
