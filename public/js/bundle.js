@@ -10033,7 +10033,7 @@ const displayMap = (ocations) => {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   updateData: () => (/* binding */ updateData)
+/* harmony export */   updateSettings: () => (/* binding */ updateSettings)
 /* harmony export */ });
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
 /* harmony import */ var _alert__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./alert */ "./public/js/alert.js");
@@ -10042,16 +10042,17 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const updateData = async (name, email) => {
+// type is either 'password' or 'data'
+const updateSettings = async (data, type) => {
     try {
-        const res = await (0,axios__WEBPACK_IMPORTED_MODULE_1__["default"])({
-            method: 'PATCH',
-            url: 'http://127.0.0.1:8000/api/v1/users/update-me',
-            data: { name, email },
-        });
+        const method = 'patch';
+        const url = `http://127.0.0.1:8000/api/v1/users/${type === 'password' ? 'update-my-password' : 'update-me'}`;
+
+        const res = await (0,axios__WEBPACK_IMPORTED_MODULE_1__["default"])({ method, url, data });
+        console.log(data);
 
         if (res.data.status === 'success') {
-            (0,_alert__WEBPACK_IMPORTED_MODULE_0__.showAlert)('success', 'Data updated successfully!');
+            (0,_alert__WEBPACK_IMPORTED_MODULE_0__.showAlert)('success', `${type.toUpperCase()} updated successfully!`);
         }
     } catch (err) {
         console.log(err);
@@ -14904,6 +14905,7 @@ const mapBox = document.getElementById('map');
 const loginForm = document.querySelector('#form--login');
 const logoutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
+const userPasswordForm = document.querySelector('.form-user-password');
 
 // VALUES
 
@@ -14926,11 +14928,35 @@ if (loginForm) {
 if (logoutBtn) logoutBtn.addEventListener('click', _login__WEBPACK_IMPORTED_MODULE_2__.logout);
 
 if (userDataForm)
-    userDataForm.addEventListener('submit', (e) => {
+    userDataForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const name = document.getElementById('name').value;
         const email = document.getElementById('email').value;
-        (0,_updateSettings__WEBPACK_IMPORTED_MODULE_3__.updateData)(name, email);
+        await (0,_updateSettings__WEBPACK_IMPORTED_MODULE_3__.updateSettings)({ name, email }, 'data');
+    });
+
+if (userPasswordForm)
+    userPasswordForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        document.querySelector('.btn--save-password').textContent = 'Updating...';
+
+        const passwordCurrent =
+            document.getElementById('password-current').value;
+        const password = document.getElementById('password').value;
+        const passwordConfirm =
+            document.getElementById('password-confirm').value;
+        await (0,_updateSettings__WEBPACK_IMPORTED_MODULE_3__.updateSettings)(
+            { password, passwordCurrent, passwordConfirm },
+            'password',
+        );
+
+        document.querySelector('.btn--save-password').textContent =
+            'Save password';
+
+        document.getElementById('password-current').value = '';
+        document.getElementById('password').value = '';
+        document.getElementById('password-confirm').value = '';
     });
 
 })();
