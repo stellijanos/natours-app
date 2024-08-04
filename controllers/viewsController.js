@@ -22,7 +22,7 @@ exports.getTour = catchAsync(async (req, res, next) => {
     });
 
     // 2) buld template
-    console.log();
+    // console.log();
 
     // 3) render template using data from 1)
     res.status(200).render('tour', {

@@ -1,6 +1,7 @@
 /* eslint-disable */
 
-console.log('hello from the client side');
-const locations = JSON.parse(document.getElementById('map').dataset.locations);
 
-console.log(locations);
+export const displayMap = (ocations) => {
+    console.log('hello from the client side');
+    console.log(locations);
+};
