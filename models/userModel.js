@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
     },
     photo: {
         type: String,
-        // default: 'no-image.png',
+        default: 'default.jpg',
     },
     password: {
         type: String,
@@ -55,24 +55,24 @@ const userSchema = new mongoose.Schema({
     },
 });
 
-// userSchema.pre('save', async function (next) {
-//     // only run this function if password was actually modified
-//     if (!this.isModified('password')) return next();
+userSchema.pre('save', async function (next) {
+    // only run this function if password was actually modified
+    if (!this.isModified('password')) return next();
 
-//     // hash the password with cost of 12
-//     this.password = await bcrypt.hash(this.password, 16);
+    // hash the password with cost of 12
+    this.password = await bcrypt.hash(this.password, 16);
 
-//     // delete the passwordConfirm field
-//     this.passwordConfirm = undefined;
-//     next();
-// });
+    // delete the passwordConfirm field
+    this.passwordConfirm = undefined;
+    next();
+});
 
-// userSchema.pre('save', function (next) {
-//     if (!this.isModified('password') || this.isNew) return next();
+userSchema.pre('save', function (next) {
+    if (!this.isModified('password') || this.isNew) return next();
 
-//     this.passwordChangedAt = Date.now() - 1000;
-//     next();
-// });
+    this.passwordChangedAt = Date.now() - 1000;
+    next();
+});
 
 userSchema.pre(/^find/, function (next) {
     // this points to the current query
