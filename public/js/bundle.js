@@ -10049,7 +10049,6 @@ const updateSettings = async (data, type) => {
         const url = `http://127.0.0.1:8000/api/v1/users/${type === 'password' ? 'update-my-password' : 'update-me'}`;
 
         const res = await (0,axios__WEBPACK_IMPORTED_MODULE_1__["default"])({ method, url, data });
-        console.log(data);
 
         if (res.data.status === 'success') {
             (0,_alert__WEBPACK_IMPORTED_MODULE_0__.showAlert)('success', `${type.toUpperCase()} updated successfully!`);
@@ -14930,16 +14929,22 @@ if (logoutBtn) logoutBtn.addEventListener('click', _login__WEBPACK_IMPORTED_MODU
 if (userDataForm)
     userDataForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        await (0,_updateSettings__WEBPACK_IMPORTED_MODULE_3__.updateSettings)({ name, email }, 'data');
+
+        const form = new FormData();
+
+        form.append('name', document.getElementById('name').value);
+        form.append('email', document.getElementById('email').value);
+        form.append('photo', document.getElementById('photo').files[0]);
+
+        await (0,_updateSettings__WEBPACK_IMPORTED_MODULE_3__.updateSettings)(form, 'data');
     });
 
 if (userPasswordForm)
     userPasswordForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        document.querySelector('.btn--save-password').textContent = 'Updating...';
+        document.querySelector('.btn--save-password').textContent =
+            'Updating...';
 
         const passwordCurrent =
             document.getElementById('password-current').value;
