@@ -12,9 +12,17 @@ module.exports = class Email {
 
     newTransport() {
         if (process.env.NODE_ENV === 'production') {
-            // sendgrid
-            return 1;
+            // Configure for production (example with SendGrid)
+            return nodemailer.createTransport({
+                service: 'SendGrid',
+                auth: {
+                    user: process.env.SENDGRID_USERNAME,
+                    pass: process.env.SENDGRID_PASSWORD,
+                },
+            });
         }
+
+        // Development transport
         return nodemailer.createTransport({
             host: process.env.EMAIL_HOST,
             port: process.env.EMAIL_PORT,
@@ -44,7 +52,7 @@ module.exports = class Email {
             to: this.to,
             subject,
             html,
-            text: htmlToText.fromString(html),
+            text: htmlToText.convert(html),
             // html:
         };
 
@@ -53,6 +61,6 @@ module.exports = class Email {
     }
 
     async sendWelcome() {
-        await this.send('welcome', 'Welcome to the Natours Website!');
+        await this.send('signedUp', 'Welcome to the Natours Website!');
     }
 };
