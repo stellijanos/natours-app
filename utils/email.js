@@ -14,10 +14,11 @@ module.exports = class Email {
         if (process.env.NODE_ENV === 'production') {
             // Configure for production (example with SendGrid)
             return nodemailer.createTransport({
-                service: 'SendGrid',
+                host: process.env.EMAIL_HOST,
+                port: process.env.EMAIL_PORT,
                 auth: {
-                    user: process.env.SENDGRID_USERNAME,
-                    pass: process.env.SENDGRID_PASSWORD,
+                    user: process.env.EMAIL_USERNAME_PROD,
+                    pass: process.env.EMAIL_PASSWORD_PROD,
                 },
             });
         }
@@ -36,7 +37,6 @@ module.exports = class Email {
     // send the actual email
     async send(template, subject) {
         // 1) render html based on a pug template
-        console.log(template);
         const html = pug.renderFile(
             `${__dirname}/../views/emails/${template}.pug`,
             {
