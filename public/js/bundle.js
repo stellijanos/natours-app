@@ -10024,6 +10024,50 @@ const displayMap = (ocations) => {
 
 /***/ }),
 
+/***/ "./public/js/stripe.js":
+/*!*****************************!*\
+  !*** ./public/js/stripe.js ***!
+  \*****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   bookTour: () => (/* binding */ bookTour)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
+/* harmony import */ var _alert__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./alert */ "./public/js/alert.js");
+/* eslint-disable */
+
+
+
+
+const stripe = Stripe(
+    'pk_test_51Ps5RHP9ZXctMcboT8727EkPUMZcaBmYpgLjFHOuh0yFi9aAs9Kh5jB1ByerN8a5M4n2i8ReknXPONx4uAzdeObH00Vh4GgUcH',
+);
+
+const bookTour = async (tourId) => {
+    try {
+        // 1) get checkout session from API
+
+        const session = await (0,axios__WEBPACK_IMPORTED_MODULE_1__["default"])(
+            `http://127.0.0.1:8000/api/v1/bookings/checkout-session/${tourId}`,
+        );
+    
+        // 2) create checkout form + charge credit card
+
+        await stripe.redirectToCheckout({
+            sessionId: session.data.session.id,
+        });
+    } catch (err) {
+        console.log(err);
+        (0,_alert__WEBPACK_IMPORTED_MODULE_0__.showAlert)('error', err);
+    }
+};
+
+
+/***/ }),
+
 /***/ "./public/js/updateSettings.js":
 /*!*************************************!*\
   !*** ./public/js/updateSettings.js ***!
@@ -10338,6 +10382,9 @@ const resolveBodyLength = async (headers, body) => {
       withCredentials = withCredentials ? 'include' : 'omit';
     }
 
+    // Cloudflare Workers throws when credentials are defined
+    // see https://github.com/cloudflare/workerd/issues/902
+    const isCredentialsSupported = "credentials" in Request.prototype; 
     request = new Request(url, {
       ...fetchOptions,
       signal: composedSignal,
@@ -10345,7 +10392,7 @@ const resolveBodyLength = async (headers, body) => {
       headers: headers.normalize().toJSON(),
       body: data,
       duplex: "half",
-      credentials: withCredentials
+      credentials: isCredentialsSupported ? withCredentials : undefined
     });
 
     let response = await fetch(request);
@@ -11248,7 +11295,10 @@ function AxiosError(message, code, config, request, response) {
   code && (this.code = code);
   config && (this.config = config);
   request && (this.request = request);
-  response && (this.response = response);
+  if (response) {
+    this.response = response;
+    this.status = response.status ? response.status : null;
+  }
 }
 
 _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].inherits(AxiosError, Error, {
@@ -11268,7 +11318,7 @@ _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].inherits(AxiosError, Error, {
       // Axios
       config: _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].toJSONObject(this.config),
       code: this.code,
-      status: this.response && this.response.status ? this.response.status : null
+      status: this.status
     };
   }
 });
@@ -12297,7 +12347,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   VERSION: () => (/* binding */ VERSION)
 /* harmony export */ });
-const VERSION = "1.7.3";
+const VERSION = "1.7.5";
 
 /***/ }),
 
@@ -12909,7 +12959,7 @@ __webpack_require__.r(__webpack_exports__);
 // Standard browser envs have full support of the APIs needed to test
 // whether the request URL is of the same origin as current location.
   (function standardBrowserEnv() {
-    const msie = /(msie|trident)/i.test(navigator.userAgent);
+    const msie = _platform_index_js__WEBPACK_IMPORTED_MODULE_0__["default"].navigator && /(msie|trident)/i.test(_platform_index_js__WEBPACK_IMPORTED_MODULE_0__["default"].navigator.userAgent);
     const urlParsingNode = document.createElement('a');
     let originURL;
 
@@ -13959,9 +14009,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   hasBrowserEnv: () => (/* binding */ hasBrowserEnv),
 /* harmony export */   hasStandardBrowserEnv: () => (/* binding */ hasStandardBrowserEnv),
 /* harmony export */   hasStandardBrowserWebWorkerEnv: () => (/* binding */ hasStandardBrowserWebWorkerEnv),
+/* harmony export */   navigator: () => (/* binding */ _navigator),
 /* harmony export */   origin: () => (/* binding */ origin)
 /* harmony export */ });
 const hasBrowserEnv = typeof window !== 'undefined' && typeof document !== 'undefined';
+
+const _navigator = typeof navigator === 'object' && navigator || undefined;
 
 /**
  * Determine if we're running in a standard browser environment
@@ -13980,10 +14033,8 @@ const hasBrowserEnv = typeof window !== 'undefined' && typeof document !== 'unde
  *
  * @returns {boolean}
  */
-const hasStandardBrowserEnv = (
-  (product) => {
-    return hasBrowserEnv && ['ReactNative', 'NativeScript', 'NS'].indexOf(product) < 0
-  })(typeof navigator !== 'undefined' && navigator.product);
+const hasStandardBrowserEnv = hasBrowserEnv &&
+  (!_navigator || ['ReactNative', 'NativeScript', 'NS'].indexOf(_navigator.product) < 0);
 
 /**
  * Determine if we're running in a standard browser webWorker environment
@@ -14891,7 +14942,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mapbox__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./mapbox */ "./public/js/mapbox.js");
 /* harmony import */ var _login__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./login */ "./public/js/login.js");
 /* harmony import */ var _updateSettings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./updateSettings */ "./public/js/updateSettings.js");
+/* harmony import */ var _stripe__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./stripe */ "./public/js/stripe.js");
 /* eslint-disable */
+
 
 
 
@@ -14905,13 +14958,14 @@ const loginForm = document.querySelector('#form--login');
 const logoutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
+const bookBtn = document.getElementById('book-tour');
 
 // VALUES
 
 // DELEGATION
 if (mapBox) {
-    const locations = JSON.parse(mapbox.dataset.locations);
-    (0,_mapbox__WEBPACK_IMPORTED_MODULE_1__.displayMap)(locations);
+    // const locations = JSON.parse(mapbox.dataset.locations);
+    // displayMap(locations);
 }
 
 if (loginForm) {
@@ -14963,6 +15017,14 @@ if (userPasswordForm)
         document.getElementById('password').value = '';
         document.getElementById('password-confirm').value = '';
     });
+
+if (bookBtn) {
+    bookBtn.addEventListener('click', (e) => {
+        e.target.textContent = 'Processing...';
+        const { tourId } = e.target.dataset;
+        (0,_stripe__WEBPACK_IMPORTED_MODULE_4__.bookTour)(tourId);
+    });
+}
 
 })();
 

@@ -57,6 +57,14 @@ app.use(mongoSanitize());
 // Data sanitization against XSS
 app.use(xss());
 
+app.use((req, res, next) => {
+    res.setHeader(
+        'Content-Security-Policy',
+        "script-src 'self' https://js.stripe.com",
+    );
+    next();
+});
+
 // Prevent parameter pollution
 app.use(
     hpp({
