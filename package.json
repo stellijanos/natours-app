@@ -4,7 +4,8 @@
   "description": "Learning node, express and mongodb",
   "main": "app.js",
   "scripts": {
-    "start": "supervisor server.js",
+    "start": "node server.js",
+    "dev": "cross-env supervisor server.js",
     "start:prod": "cross-env NODE_ENV=production supervisor server.js",
     "debug": "ndb server.js",
     "watch:js": "webpack --watch --config webpack.config.js",
