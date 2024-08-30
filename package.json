@@ -8,13 +8,14 @@
     "start:prod": "cross-env NODE_ENV=production supervisor server.js",
     "debug": "ndb server.js",
     "watch:js": "webpack --watch --config webpack.config.js",
-    "build:js": "webpack"
+    "build:js": "webpack --config webpack.config.js --mode production"
   },
   "author": "Janos Stelli",
   "license": "ISC",
   "dependencies": {
     "@babel/polyfill": "^7.12.1",
     "axios": "^1.7.5",
+    "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
